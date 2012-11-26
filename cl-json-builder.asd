@@ -9,7 +9,8 @@
     :version "0.1"
     :author "Andrey Kutejko <andy128k@gmail.com>"
     :licence "LLGPL"
-    :depends-on (:alexandria)
+    :depends-on (:iterate)
     :serial t
     :components ((:file "src/package")
                  (:file "src/builder")))
+

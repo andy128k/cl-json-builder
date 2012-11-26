@@ -3,7 +3,7 @@
 (defpackage :json-builder
   (:use :common-lisp
         :common-lisp-user
-        :alexandria)
+        :iterate)
   (:export #:json-string
 
            #:json-number
@@ -18,4 +18,9 @@
            #:json-array
 
            #:make-json-object
-           #:json-object-str))
+           #:json-object-str
+
+           #:json-obj-from-plist
+           #:json-obj-from-alist
+           #:json-obj-from-hash))
+

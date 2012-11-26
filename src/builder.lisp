@@ -68,6 +68,33 @@
                                 (write-string (json-simple-value v) stream))
                            (write-char #\] stream))))
 
+(defmacro define-object-loops (name (&rest params) &body body)
+  `(progn
+     (defun ,(intern (format nil "~A-PLIST" name)) ,params
+       (macrolet ((object (o k v)
+                    `(for (,k ,v) on ,o by #'cddr)))
+         ,@body))
+     (defun ,(intern (format nil "~A-ALIST" name)) ,params
+       (macrolet ((object (o k v)
+                    `(for (,k . ,v) in ,o)))
+         ,@body))
+     (defun ,(intern (format nil "~A-HASH" name)) ,params
+       (macrolet ((object (o k v)
+                    `(for (,k ,v) in-hashtable ,o)))
+         ,@body))))
+
+(define-object-loops json-obj-from (obj)
+  (make-json-object :str (with-output-to-string (stream)
+                           (write-char #\{ stream)
+                           (iter (object obj k v)
+                                 (for c initially nil then t)
+                                 (when c
+                                   (write-char #\, stream))
+                                 (write-string (%json-string (string k)) stream)
+                                 (write-char #\: stream)
+                                 (write-string (json-simple-value v) stream))
+                           (write-char #\} stream))))
+
 (defun json-object (&rest keys-and-values)
   (make-json-object :str (with-output-to-string (stream)
                            (write-char #\{ stream)
@@ -81,3 +108,4 @@
                                 (write-char #\: stream)
                                 (write-string (json-simple-value v) stream))
                            (write-char #\} stream))))
+
