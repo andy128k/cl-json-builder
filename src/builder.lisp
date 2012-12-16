@@ -83,6 +83,16 @@
                     `(for (,k ,v) in-hashtable ,o)))
          ,@body))))
 
+(defun %key-name (k)
+  (if (symbolp k)
+      (with-output-to-string (stream)
+	(loop
+	   for ch across (symbol-name k)
+	   do (if (char= ch #\-)
+		  (write-char #\_ stream)
+		  (write-char (char-downcase ch) stream))))
+      (string k)))
+
 (define-object-loops json-obj-from (obj)
   (make-json-object :str (with-output-to-string (stream)
                            (write-char #\{ stream)
@@ -90,7 +100,7 @@
                                  (for c initially nil then t)
                                  (when c
                                    (write-char #\, stream))
-                                 (write-string (%json-string (string k)) stream)
+                                 (write-string (%json-string (%key-name k)) stream)
                                  (write-char #\: stream)
                                  (write-string (json-simple-value v) stream))
                            (write-char #\} stream))))
@@ -104,7 +114,7 @@
                               do
                                 (when c
                                   (write-char #\, stream))
-                                (write-string (%json-string (string k)) stream)
+                                (write-string (%json-string (%key-name k)) stream)
                                 (write-char #\: stream)
                                 (write-string (json-simple-value v) stream))
                            (write-char #\} stream))))
