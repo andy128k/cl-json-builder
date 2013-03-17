@@ -19,6 +19,7 @@
 
            #:make-json-object
            #:json-object-str
+           #:json-object-p
 
            #:json-obj-from-plist
            #:json-obj-from-alist
